@@ -149,4 +149,17 @@ public class TodoControllerTest {
         String responseContent = result.getResponse().getContentAsString();
         assertThat(responseContent).contains("Todo item not found");
     }
+
+    @Test
+    void should_throws_TodoItemNotFoundException_when_delete_todo_given_invalid_id() throws Exception {
+        // Given
+        final Integer givenId = 999;
+        // When
+        MvcResult result = client.perform(MockMvcRequestBuilders.delete("/todo/todoItem/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andReturn();
+        // Then
+        String responseContent = result.getResponse().getContentAsString();
+        assertThat(responseContent).contains("Todo item not found");
+    }
 }
