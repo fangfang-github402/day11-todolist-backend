@@ -107,4 +107,16 @@ public class TodoControllerTest {
         List<Todo> todos = todoRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(todos).hasSize(1);
     }
+
+    @Test
+    void should_return_todo_when_get_by_id_given_id() throws Exception {
+        // Given
+        final Integer givenId = todoRepository.findAll().get(1).getId();
+        // When
+        client.perform(MockMvcRequestBuilders.get("/todo/todoItem/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(givenId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(todo2.getText()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(todo2.isDone()));
+    }
 }
