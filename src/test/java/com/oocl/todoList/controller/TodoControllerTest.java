@@ -132,4 +132,21 @@ public class TodoControllerTest {
         String responseContent = result.getResponse().getContentAsString();
         assertThat(responseContent).contains("Todo item not found");
     }
+
+    @Test
+    void should_throws_TodoItemNotFoundException_when_update_todo_given_invalid_id() throws Exception {
+        // Given
+        final Integer givenId = 999;
+        final Todo givenTodo = new Todo(999, "text999 was done", true);
+        // When
+        MvcResult result = client.perform(MockMvcRequestBuilders.put("/todo/todoItem/" + givenId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoJacksonTester.write(givenTodo).getJson())
+                )
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andReturn();
+        // Then
+        String responseContent = result.getResponse().getContentAsString();
+        assertThat(responseContent).contains("Todo item not found");
+    }
 }
