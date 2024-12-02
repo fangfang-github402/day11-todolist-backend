@@ -2,7 +2,6 @@ package com.oocl.todoList.controller;
 
 import com.oocl.todoList.Repository.TodoRepository;
 import com.oocl.todoList.model.Todo;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,7 +85,7 @@ public class TodoControllerTest {
     void should_return_updated_todo_when_update_todo_given_todo() throws Exception {
         // Given
         final Integer givenId = todoRepository.findAll().get(1).getId();
-        final Todo givenTodo = new Todo(givenId,"text was done", true);
+        final Todo givenTodo = new Todo(givenId, "text was done", true);
         // When
         client.perform(MockMvcRequestBuilders.put("/todo/todoItem/" + givenId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +137,7 @@ public class TodoControllerTest {
     void should_throws_TodoItemNotFoundException_when_update_todo_given_invalid_id() throws Exception {
         // Given
         final Integer givenId = todoRepository.findAll().get(1).getId() + 1;
-        final Todo givenTodo = new Todo(999, "text999 was done", true);
+        final Todo givenTodo = new Todo(givenId, "text was done", true);
         // When
         MvcResult result = client.perform(MockMvcRequestBuilders.put("/todo/todoItem/" + givenId)
                         .contentType(MediaType.APPLICATION_JSON)
