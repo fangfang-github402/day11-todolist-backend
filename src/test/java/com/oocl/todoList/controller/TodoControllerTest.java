@@ -95,4 +95,16 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenTodo.getText()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenTodo.isDone()));
     }
+
+    @Test
+    void should_return_nothing_when_delete_todo_given_todo() throws Exception {
+        // Given
+        final Integer givenId = todoRepository.findAll().get(1).getId();
+        // When
+        client.perform(MockMvcRequestBuilders.delete("/todo/todoItem/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        // Then
+        List<Todo> todos = todoRepository.findAll();
+        AssertionsForInterfaceTypes.assertThat(todos).hasSize(1);
+    }
 }
