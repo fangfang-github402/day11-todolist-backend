@@ -44,7 +44,7 @@ public class TodoControllerTest {
     }
 
     @Test
-    void should_return_all_todos() throws Exception {
+    void should_return_all_todos_when_get_all_given_todos_exist() throws Exception {
         // Given
         final List<Todo> givenTodos = todoRepository.findAll();
         // When
@@ -58,4 +58,6 @@ public class TodoControllerTest {
                 .usingRecursiveFieldByFieldElementComparator()
                 .isEqualTo(givenTodos);
     }
+
+    
 }
