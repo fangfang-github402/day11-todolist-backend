@@ -68,7 +68,7 @@ public class TodoControllerTest {
     void should_return_todo_when_add_todo_given_todo() throws Exception {
         // Given
         final Todo givenTodo = new Todo("test text 3");
-        Integer expectedId = todoRepository.findAll().size() + 1;
+        Integer expectedId = todoRepository.findAll().get(1).getId() + 1;
         // When
         client.perform(MockMvcRequestBuilders.post("/todo/todoItem")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,13 +85,14 @@ public class TodoControllerTest {
     @Test
     void should_return_updated_todo_when_update_todo_given_todo() throws Exception {
         // Given
-        final Todo givenTodo = new Todo(1,"text1 was done", true);
+        final Integer givenId = todoRepository.findAll().get(1).getId();
+        final Todo givenTodo = new Todo(givenId,"text was done", true);
         // When
-        client.perform(MockMvcRequestBuilders.put("/todo/todoItem/1")
+        client.perform(MockMvcRequestBuilders.put("/todo/todoItem/" + givenId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(todoJacksonTester.write(givenTodo).getJson()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(givenId))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenTodo.getText()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenTodo.isDone()));
     }
@@ -123,7 +124,7 @@ public class TodoControllerTest {
     @Test
     void should_throws_TodoItemNotFoundException_when_get_by_id_given_invalid_id() throws Exception {
         // Given
-        final Integer givenId = 999;
+        final Integer givenId = todoRepository.findAll().get(1).getId() + 1;
         // When
         MvcResult result = client.perform(MockMvcRequestBuilders.get("/todo/todoItem/" + givenId))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -136,7 +137,7 @@ public class TodoControllerTest {
     @Test
     void should_throws_TodoItemNotFoundException_when_update_todo_given_invalid_id() throws Exception {
         // Given
-        final Integer givenId = 999;
+        final Integer givenId = todoRepository.findAll().get(1).getId() + 1;
         final Todo givenTodo = new Todo(999, "text999 was done", true);
         // When
         MvcResult result = client.perform(MockMvcRequestBuilders.put("/todo/todoItem/" + givenId)
@@ -153,7 +154,7 @@ public class TodoControllerTest {
     @Test
     void should_throws_TodoItemNotFoundException_when_delete_todo_given_invalid_id() throws Exception {
         // Given
-        final Integer givenId = 999;
+        final Integer givenId = todoRepository.findAll().get(1).getId() + 1;
         // When
         MvcResult result = client.perform(MockMvcRequestBuilders.delete("/todo/todoItem/" + givenId))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
