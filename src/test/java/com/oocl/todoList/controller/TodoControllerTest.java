@@ -119,4 +119,17 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(todo2.getText()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(todo2.isDone()));
     }
+
+    @Test
+    void should_throws_TodoItemNotFoundException_when_get_by_id_given_invalid_id() throws Exception {
+        // Given
+        final Integer givenId = 999;
+        // When
+        MvcResult result = client.perform(MockMvcRequestBuilders.get("/todo/todoItem/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andReturn();
+        // Then
+        String responseContent = result.getResponse().getContentAsString();
+        assertThat(responseContent).contains("Todo item not found");
+    }
 }
