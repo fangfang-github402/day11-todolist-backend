@@ -2,6 +2,8 @@ package com.oocl.todoList.controller;
 
 import com.oocl.todoList.Repository.TodoRepository;
 import com.oocl.todoList.model.Todo;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class TodoControllerTest {
     private TodoRepository todoRepository;
     @Autowired
     private JacksonTester<List<Todo>> todoListJacksonTester;
+    @Autowired
+    private JacksonTester<Todo> todoJacksonTester;
     private Todo todo1;
     private Todo todo2;
 
@@ -59,5 +64,22 @@ public class TodoControllerTest {
                 .isEqualTo(givenTodos);
     }
 
+    @Test
+    void should_return_todo_when_add_todo_given_todo() throws Exception {
+        // Given
+        final Todo givenTodo = new Todo("test text 3");
+        Integer expectedId = todoRepository.findAll().size() + 1;
+        // When
+        client.perform(MockMvcRequestBuilders.post("/todo/todoItem")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoJacksonTester.write(givenTodo).getJson()))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(expectedId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenTodo.getText()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(false));
+
+        List<Todo> todos = todoRepository.findAll();
+        AssertionsForInterfaceTypes.assertThat(todos).hasSize(3);
+    }
     
 }
