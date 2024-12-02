@@ -81,5 +81,18 @@ public class TodoControllerTest {
         List<Todo> todos = todoRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(todos).hasSize(3);
     }
-    
+
+    @Test
+    void should_return_updated_todo_when_update_todo_given_todo() throws Exception {
+        // Given
+        final Todo givenTodo = new Todo(1,"text1 was done", true);
+        // When
+        client.perform(MockMvcRequestBuilders.put("/todo/todoItem/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(todoJacksonTester.write(givenTodo).getJson()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenTodo.getText()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenTodo.isDone()));
+    }
 }
