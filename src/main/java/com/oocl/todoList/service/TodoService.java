@@ -2,8 +2,9 @@ package com.oocl.todoList.service;
 
 import com.oocl.todoList.Repository.TodoRepository;
 import com.oocl.todoList.exception.TodoItemNotFoundException;
-import org.springframework.stereotype.Service;
 import com.oocl.todoList.model.Todo;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -23,24 +24,16 @@ public class TodoService {
     }
 
     public Todo updateTodoItem(Integer id, Todo todoItem) {
-        Todo todo = todoRepository.findById(id).orElse(null);
-        if (todo != null) {
-            return todoRepository.save(todoItem);
-        } else {
-            throw new TodoItemNotFoundException();
-        }
+        todoRepository.findById(id).orElseThrow(TodoItemNotFoundException::new);
+        return todoRepository.save(todoItem);
     }
 
     public void deleteTodoItem(Integer id) {
-        Todo todo = todoRepository.findById(id).orElse(null);
-        if (todo != null) {
-            todoRepository.delete(todo);
-        } else {
-            throw new TodoItemNotFoundException();
-        }
+        Todo todo = todoRepository.findById(id).orElseThrow(TodoItemNotFoundException::new);
+        todoRepository.delete(todo);
     }
 
     public Todo getTodoItemById(Integer id) {
-        return todoRepository.findById(id).orElse(null);
+        return todoRepository.findById(id).orElseThrow(TodoItemNotFoundException::new);
     }
 }
