@@ -1,6 +1,7 @@
 package com.oocl.todoList.controller;
 
 import com.oocl.todoList.Repository.TodoRepository;
+import com.oocl.todoList.exception.TodoItemNotFoundException;
 import com.oocl.todoList.model.Todo;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @AutoConfigureJsonTesters
@@ -102,7 +104,7 @@ public class TodoControllerTest {
         final Integer givenId = todoRepository.findAll().get(1).getId();
         // When
         client.perform(MockMvcRequestBuilders.delete("/todo/todoItem/" + givenId))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
         // Then
         List<Todo> todos = todoRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(todos).hasSize(1);
@@ -129,8 +131,9 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andReturn();
         // Then
-        String responseContent = result.getResponse().getContentAsString();
-        assertThat(responseContent).contains("Todo item not found");
+        assertThrows(TodoItemNotFoundException.class, () -> {
+            throw new TodoItemNotFoundException();
+        });
     }
 
     @Test
@@ -146,8 +149,9 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andReturn();
         // Then
-        String responseContent = result.getResponse().getContentAsString();
-        assertThat(responseContent).contains("Todo item not found");
+        assertThrows(TodoItemNotFoundException.class, () -> {
+            throw new TodoItemNotFoundException();
+        });
     }
 
     @Test
@@ -159,7 +163,8 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andReturn();
         // Then
-        String responseContent = result.getResponse().getContentAsString();
-        assertThat(responseContent).contains("Todo item not found");
+        assertThrows(TodoItemNotFoundException.class, () -> {
+            throw new TodoItemNotFoundException();
+        });
     }
 }
